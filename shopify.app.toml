@@ -3,7 +3,7 @@
 client_id = "9bcf7ae603871ad386405b50526fcf82"
 name = "import-customers"
 handle = "import-customers"
-application_url = "https://elliott-tags-frozen-longer.trycloudflare.com"
+application_url = "https://worst-shepherd-connectors-discussing.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products,write_customers,read_customers"
 
 [auth]
 redirect_urls = [
-  "https://elliott-tags-frozen-longer.trycloudflare.com/auth/callback",
-  "https://elliott-tags-frozen-longer.trycloudflare.com/auth/shopify/callback",
-  "https://elliott-tags-frozen-longer.trycloudflare.com/api/auth/callback"
+  "https://worst-shepherd-connectors-discussing.trycloudflare.com/auth/callback",
+  "https://worst-shepherd-connectors-discussing.trycloudflare.com/auth/shopify/callback",
+  "https://worst-shepherd-connectors-discussing.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -1,7 +1,6 @@
 import shopify from "../shopify.js";
 
 export const importToShopify=async(payload,session)=>{
-  console.log(payload,'payloadpayload')
     const client = new shopify.api.clients.Graphql({ session });
    
     const   variables={
