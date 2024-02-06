@@ -83,4 +83,16 @@ export default {
       // }
     },
   },
+  BULK_OPERATIONS_FINISH:{
+    deliveryMethod: DeliveryMethod.Http,
+    callbackUrl: "/api/webhooks",
+    callback: async (topic, shop, body, webhookId) => {
+    console.log(topic,"topic===>")
+    console.log(shop,"shop===?>")
+    console.log(body,"body===>")
+    console.log(webhookId)
+      
+    },
+  },
+  
 };

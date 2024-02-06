@@ -5,12 +5,13 @@ import {
 } from '@shopify/app-bridge-react';
 function HomePage() {
   const [file, setFile] = useState(null);
+  const [xlsfileLoader, setXlsFileLoader] = useState(false);
   const [xlsfile, setXlsFile] = useState(null);
   const [stagedUploadPath, setStagedUploadPath] = useState(null)
   const [fileLoader, setFileLoader] = useState(false)
   const [submitLoaderBtn, setSubmitLoaderBtn] = useState(false)
   const authFetch = useAuthenticatedFetch();
-  const [toast, setToast] = useState({active: false,message: ""})
+  const [toast, setToast] = useState({ active: false, message: "" })
   const toggleActive = useCallback(() => setToast(() => !toast.active), []);
   const showToastMessage = (data) => {
     const { isError } = data
@@ -19,14 +20,23 @@ function HomePage() {
       message: isError ? "Something went wrong" : "Data imported successfully"
     })
   }
-  const uploadCSVFile=async(_dropFiles, _rejectedFiles)=>{
-    const uploadedFile = _dropFiles[0]
-    const formData = new FormData()
-    formData.append("file",uploadedFile)
-    const response = await authFetch(`/api/v1/upload-excel`, {
-      method: "POST",
-      body:formData
-    });
+  const uploadCSVFile = async (_dropFiles, _rejectedFiles) => {
+    try {
+      setXlsFileLoader(true)
+      const uploadedFile = _dropFiles[0]
+      const formData = new FormData()
+      formData.append("file", uploadedFile)
+      const response = await authFetch(`/api/v1/upload-excel`, {
+        method: "POST",
+        body: formData
+      });
+      setXlsFile(uploadedFile)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      
+      setXlsFileLoader(false)
+    }
   }
   const handleDropZoneDrop = async (_dropFiles, _rejectedFiles) => {
     try {
@@ -68,7 +78,7 @@ function HomePage() {
           if (upload?.ok) {
             setFileLoader(false)
             setStagedUploadPath(key)
-          }else{
+          } else {
             showToastMessage({ isError: true })
           }
         }
@@ -95,7 +105,6 @@ function HomePage() {
         })
       });
       const result = await response.json()
-      console.log(result, 'responseresponse')
       if (result?.success) {
         if (result?.message?.status == "CREATED") {
           showToastMessage({ isError: false })
@@ -111,6 +120,7 @@ function HomePage() {
     } finally {
       setSubmitLoaderBtn(false)
       setFile(null)
+      setXlsFile(null)
     }
   }
   const toastMarkup = toast.active ? (
@@ -125,6 +135,17 @@ function HomePage() {
         <LegacyStack alignment="center" >
           <Text variant="bodySm" as="p">
             {file.name}{' '} Uploaded
+          </Text>
+        </LegacyStack>
+      </LegacyStack>
+    </div>
+  );
+  const uploadedXlsFiles = xlsfile && (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }} >
+      <LegacyStack vertical style={{ textAlign: "center" }}>
+        <LegacyStack alignment="center" >
+          <Text variant="bodySm" as="p">
+            {xlsfile.name}{' '} Uploaded
           </Text>
         </LegacyStack>
       </LegacyStack>
@@ -145,13 +166,17 @@ function HomePage() {
             }}
           />
           <Layout>
-          <Layout.Section>
-              <LegacyCard title="Upload csv or Excel File" sectioned>
+            <Layout.Section>
+              <LegacyCard title="Upload csv  File" sectioned>
                 <DropZone
-                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                   type="text"
-                  errorOverlayText="File type must be .jsonl"
+                  errorOverlayText="File type must be .csv"
                   allowMultiple={false} onDrop={uploadCSVFile}>
+                  {
+                    xlsfileLoader && <Spinner />
+                  }
+                  {uploadedXlsFiles}
                 </DropZone>
               </LegacyCard>
             </Layout.Section>
@@ -161,12 +186,14 @@ function HomePage() {
                   accept="text/jsonl"
                   type="text"
                   errorOverlayText="File type must be .jsonl"
+
                   allowMultiple={false} onDrop={handleDropZoneDrop}>
-                  {uploadedFiles}
-                  {fileUpload}
                   {
                     fileLoader && <Spinner />
                   }
+                  {uploadedFiles}
+                  {fileUpload}
+
                 </DropZone>
               </LegacyCard>
             </Layout.Section>
