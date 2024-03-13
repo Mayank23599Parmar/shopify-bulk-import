@@ -1,4 +1,4 @@
-import { Button, DropZone, Frame, Layout, LegacyCard, LegacyStack, Page, PageActions, Spinner, Text, Toast, } from '@shopify/polaris';
+import { Button, Divider, DropZone, Frame, Layout, LegacyCard, LegacyStack, Page, PageActions, Spinner, Text, Toast, } from '@shopify/polaris';
 import { useCallback, useState } from 'react';
 import {
   useAuthenticatedFetch
@@ -30,11 +30,14 @@ function HomePage() {
         method: "POST",
         body: formData
       });
-      setXlsFile(uploadedFile)
+      if (response.ok) {
+        setXlsFile(uploadedFile)
+      }
+
     } catch (error) {
       console.log(error)
     } finally {
-      
+
       setXlsFileLoader(false)
     }
   }
@@ -151,6 +154,17 @@ function HomePage() {
       </LegacyStack>
     </div>
   );
+  const downloadJsonL = async () => {
+    const response = await authFetch(`/api/v1/download`);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'customer.jsonl';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
   return (
     <div className='home-page'>
       <Page>
@@ -178,6 +192,12 @@ function HomePage() {
                   }
                   {uploadedXlsFiles}
                 </DropZone>
+
+              </LegacyCard>
+            </Layout.Section>
+            <Layout.Section>
+              <LegacyCard sectioned>
+                <Button onClick={downloadJsonL}> Download JsonL file </Button>
               </LegacyCard>
             </Layout.Section>
             <Layout.Section>

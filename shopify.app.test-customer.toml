@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "b116bcf77e627f9cce85d2f85954cca8"
+name = "test-customer"
+handle = "test-customer-2"
+application_url = "https://the-fu-part-descending.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "customer-accounts-extension.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products,write_customers,read_customers"
+
+[auth]
+redirect_urls = [
+  "https://the-fu-part-descending.trycloudflare.com/auth/callback",
+  "https://the-fu-part-descending.trycloudflare.com/auth/shopify/callback",
+  "https://the-fu-part-descending.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-01"
+
+[pos]
+embedded = false
