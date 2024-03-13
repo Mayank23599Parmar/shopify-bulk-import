@@ -3,12 +3,12 @@
 client_id = "9bcf7ae603871ad386405b50526fcf82"
 name = "import-customers"
 handle = "import-customers"
-application_url = "https://worst-shepherd-connectors-discussing.trycloudflare.com"
+application_url = "https://ati-reservations-working-fruits.trycloudflare.com"
 embedded = true
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "shortcode9904.myshopify.com"
+dev_store_url = "test-shortcode-app.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]
@@ -17,9 +17,9 @@ scopes = "write_products,write_customers,read_customers"
 
 [auth]
 redirect_urls = [
-  "https://worst-shepherd-connectors-discussing.trycloudflare.com/auth/callback",
-  "https://worst-shepherd-connectors-discussing.trycloudflare.com/auth/shopify/callback",
-  "https://worst-shepherd-connectors-discussing.trycloudflare.com/api/auth/callback"
+  "https://ati-reservations-working-fruits.trycloudflare.com/auth/callback",
+  "https://ati-reservations-working-fruits.trycloudflare.com/auth/shopify/callback",
+  "https://ati-reservations-working-fruits.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

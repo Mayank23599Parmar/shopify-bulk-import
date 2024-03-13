@@ -1,11 +1,11 @@
 import multer from "multer";
-
+import nodemailer from 'nodemailer'
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/'); // Destination directory for storing uploaded files
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname); // Custom filename generation
+        cb(null, file.originalname); // Custom filename generation
     }
 });
 // Configure Multer middleware with storage settings
@@ -23,19 +23,27 @@ export const converCSVToShopifyObj = (data) => {
         tags: data['Tags'],
         note: data['Message (custom_34)'],
         addresses: {},
-        emailMarketingConsent: {},
+
         // smsMarketingConsent:{},
         metafields: []
     };
     shopifyObj['addresses']['address1'] = data['Address (address_line_1)']
     shopifyObj['addresses']['address2'] = data['Address Line 2 (address_line_2)']
     shopifyObj['addresses']['city'] = data['City (address_city)']
-    shopifyObj['addresses']['countryCode'] = data['Country (address_country)']
+    if (data['Country (address_country)']) {
+        shopifyObj['addresses']['countryCode'] = data['Country (address_country)']
+    }
+
     shopifyObj['addresses']['zip'] = data['Zip Code (address_zip)']
     shopifyObj['addresses']['provinceCode'] = data['State (address_state)']
     // email marketing
-    shopifyObj['emailMarketingConsent']['marketingState'] = data['I agree to receive email updates (custom_6)'] == "no" ? "NOT_SUBSCRIBED" : "SUBSCRIBED"
-    shopifyObj['emailMarketingConsent']['marketingOptInLevel'] = "SINGLE_OPT_IN"
+    if (data['I agree to receive email updates (custom_6)'] == "1") {
+        shopifyObj.emailMarketingConsent = {
+            marketingState: "SUBSCRIBED",
+            marketingOptInLevel: "SINGLE_OPT_IN"
+        }
+    }
+
     // // sms marketing
     // shopifyObj['smsMarketingConsent']['marketingState']=data['Accepts SMS Marketing'] == "no"?"NOT_SUBSCRIBED":"SUBSCRIBED"
     // shopifyObj['smsMarketingConsent']['marketingOptInLevel']="SINGLE_OPT_IN"
@@ -316,10 +324,51 @@ export const converCSVToShopifyObj = (data) => {
     if (data["Products"]) {
         shopifyObj.metafields.push({
             ...metafieldData,
-            key: "ExternalUserID",
+            key: "products",
             value: data["Products"]
         })
     }
-    console.log(shopifyObj.metafields.length,"qssqsqsqs")
+    if (data['If others, please share more details: (custom_24)']) {
+        shopifyObj.metafields.push({
+            ...metafieldData,
+            key: "custom_24",
+            value: data['If others, please share more details: (custom_24)']
+        })
+    }
+
     return { input: shopifyObj }
+}
+
+export const sendErrorMail = async (body) => {
+    const { html } = prepareEmailContent(body)
+    const transporter = nodemailer.createTransport({
+        service: "gmail",
+        port: 587,
+        secure: true,
+        auth: {
+            user: "mayank@huptechweb.com",
+            pass: "wjdd erps crwd bxwx",
+        },
+    });
+    var maillist = ["mayank@huptechweb.com"];
+
+    const mailOptions = {
+        from: "mayank@huptechweb.com",
+        to: maillist,
+        subject: `Import customer Error`,
+        html: html,
+    };
+    transporter.sendMail(mailOptions, async function (error, info) {
+        if (error) {
+            console.log(`Error in Sending Eamil: Customer`);
+        } else {
+            console.log(`Email is sent Successfully to `);
+        }
+    });
+
+}
+export function prepareEmailContent(error) {
+    let html;
+    html = `${error}`;
+    return { html };
 }

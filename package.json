@@ -15,7 +15,8 @@
     "@shopify/app": "3.55.2",
     "@shopify/cli": "3.55.2",
     "csvtojson": "^2.0.10",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.12"
   },
   "author": "admin",
   "private": true,
